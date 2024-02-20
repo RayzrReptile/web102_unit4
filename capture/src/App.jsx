@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import APIForm from './components/APIForm';
+import Gallery from './components/Gallery';
 import axios from 'axios';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
     height: "",
   });
   const [currentImage, setCurrentImage] = useState(null);
+  const [images, setImages] = useState([]);
 
   // API Key
   const ACCESS_KEY = import.meta.env.VITE_APP_ACCESS_KEY;
@@ -77,6 +79,7 @@ function App() {
     if (json.url != null) {
       console.log(json.url)
       setCurrentImage(json.url);
+      setImages((images) => [...images, json.url]);
       reset();
     } else {
       // Consider changing this to be more unique with a popup or animation
@@ -138,7 +141,7 @@ function App() {
           <br></br>
         </p>
       </div>
-
+      <Gallery images={images}/>
       <br></br>
     </div>
   )
