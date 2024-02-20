@@ -1,7 +1,8 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  margin-top: 80px;
+  margin-top: 90px;
+  margin-bottom: 90px;
   padding: 2rem;
   text-align: center;
   user-select: none;
@@ -26,6 +27,7 @@
   z-index: 10;
   transition: all 0.25s;
   height: 100px;
+  padding: 6px 0;
   color: var(--orange-light)
 }
 
@@ -116,16 +118,25 @@ input:-webkit-autofill:active{
 
 /* ===== Current Image Section ===== */
 
+.current-container {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  margin-top: 12px;
+  background-color: var(--orange-light);
+}
+
 .screenshot {
   width: 100%;
-  margin: 12px auto;
+  margin: 0 auto;
 }
 
 /* ===== Query Status Section ===== */
 
 .query-container {
   background-color: #0b0b0b;
-  width: 100%;
+  width: inherit;
   padding: 12px;
   margin-top: 12px;
 }
@@ -136,17 +147,46 @@ input:-webkit-autofill:active{
 
 /* ===== Gallery Section ===== */
 
+.gallery {
+  width: inherit;
+  padding: 12px;
+  background-color: var(--orange-medium);
+}
+
 .image-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: space-evenly;
+  align-items: stretch;
+  flex-wrap: wrap;
+  margin: 0 auto;
 }
 
 .image-wrapper {
-  max-width: 350px;
+  margin: 12px 12px 0 12px;
+  max-width: 450px;
 }
 .image {
   max-width: inherit;
+  box-shadow: 0 7px var(--orange-dark);
+}
+
+/* ===== Footer Section ===== */
+
+.footer {
+  background-color: #0b0b0b;
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  transition: all 0.25s;
+  height: 70px;
+  padding: 6px 0;
+  color: var(--orange-light);
+}
+.footer h3 {
+  margin-left: 24px;
 }
 
 /* ===== Pop-Up Section ===== */
@@ -156,7 +196,7 @@ input:-webkit-autofill:active{
 }
 
 .popup-container {
-  backdrop-filter: grayscale(1) blur(1px);
+  backdrop-filter: grayscale(1) blur(3px);
   position: fixed;
   top: 0;
   left: 0;
@@ -167,13 +207,13 @@ input:-webkit-autofill:active{
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.25s;
+  transition: all 0.25s ease-in-out;
 }
 
 .popup-wrapper {
   width: 300px;
   padding: 24px;
-  line-height: 12px;
+  line-height: 18px;
   background: var(--orange-medium);
   box-shadow: 0 7px var(--orange-dark);
   transition: all 0.25s;
@@ -182,7 +222,7 @@ input:-webkit-autofill:active{
 .popupHidden {
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s, opacity 0.25s linear;
+  transition: visibility 0s, opacity 0.25s ease-in-out;
 }
 
 .popup-button {

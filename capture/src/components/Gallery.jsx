@@ -2,11 +2,12 @@ const Gallery = ({ images }) => {
 
     return (
         <div className="gallery">
-            <h2 className="gallery-title">Your Gallery</h2>
+            <h1 className="gallery-title">Your Gallery</h1>
             <div className="image-container">
                 {images && images.length > 0 ? (
                     images.map((pic, index) => (
                         <li className="image-wrapper" key={index}>
+                            <p>{"Screenshot "+(index+1)}</p>
                             <img 
                                 className="image"
                                 src={pic} 
@@ -14,7 +15,7 @@ const Gallery = ({ images }) => {
                         </li>
                     ))
                 ) : (
-                    <h3>No screenshots taken.</h3>
+                    <h2>No screenshots taken.</h2>
                 )}
             </div>
         </div>

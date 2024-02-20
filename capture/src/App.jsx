@@ -15,12 +15,12 @@ function App() {
     width: "",
     height: "",
   });
+  const [quota, setQuota] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
   const [images, setImages] = useState([]);
   const [popupTitle, setPopupTitle] = useState("");
   const [popupSubtitle, setPopupSubtitle] = useState("");
   const [popupButton, setPopupButton] = useState(false);
-  const TIMEOUT = 15000; // Timeout limit for API
 
   // API Key
   const ACCESS_KEY = import.meta.env.VITE_APP_ACCESS_KEY;
@@ -84,10 +84,79 @@ function App() {
     // Query
     let query = `https://api.apiflash.com/v1/urltoimage?access_key=${ACCESS_KEY}&url=${fullURL}&format=${inputs.format}&width=${inputs.width}&height=${inputs.height}&no_cookie_banners=${inputs.no_cookie_banners}&no_ads=${inputs.no_ads}&wait_until=${wait_until}&response_type=${response_type}&fail_on_status=${fail_on_status}`;
 
-    callAPI(query).catch(console.error);
+    callAPI(query).catch((error) => {
+      // Failure popup
+      removePopup();
+      let title = "Bad URL";
+      let subtitle = "" + error + " --- Try a different URL";
+      createPopup(title, subtitle, false);
+    });
   }
-  // Not in use: Example for axios
-  const axios = (query) => {
+  const callAPI = async (query) => {
+    // Loading popup
+    let title = "Capturing";
+    let subtitle = "Waiting to fetch your Cap"
+    createPopup(title, subtitle, true);
+
+    const response = await fetch(query);
+    const json = await response.json();
+    if (json.url != null) {
+      console.log(json.url)
+      setCurrentImage(json.url);
+      setImages((images) => [...images, json.url]);
+      reset();
+      getQuota();
+      removePopup();
+    } else {
+      removePopup();
+      let title = "Query Error";
+      let subtitle = "Something went wrong with your Cap!"
+      createPopup(title, subtitle, false);
+    }
+  }
+  const getQuota = async () => {
+    const response = await fetch("https://api.apiflash.com/v1/urltoimage/quota?access_key=" + ACCESS_KEY);
+    const result = await response.json();
+    if (result != null) {
+      console.log(result);
+      setQuota(result);
+    } else {
+      removePopup();
+      let title = "Quota Error";
+      let subtitle = "Could not get quota data!"
+      createPopup(title, subtitle, false);
+    }
+  }
+  const reset = () => {
+    setInputs({
+      url: "",
+      format: "",
+      no_ads: "",
+      no_cookie_banners: "",
+      //scroll_page: "",
+      width: "",
+      height: "",
+    });
+  }
+  const scrollToggle = () => {
+    // Header
+    let header = document.getElementById('header');
+    let sticky = header.offsetTop + 25;
+    if (window.scrollY > sticky) {
+      header.classList.add("fade");
+    } else {
+      header.classList.remove("fade");
+    }
+    // Footer
+    let footer = document.getElementById('footer');
+    if (window.scrollY > sticky) {
+      footer.classList.remove("fade");
+    } else {
+      footer.classList.add("fade");
+    }
+  }
+   // Not in use: Example for axios
+   const axios = (query) => {
     axios.get(query)
     .then(response => {
       let url = response.data.url;
@@ -104,57 +173,8 @@ function App() {
       console.error("There was a problem getting the data: " + error);
     })
   }
-  const callAPI = async (query) => {
-    // Loading popup
-    let title = "Capturing";
-    let subtitle = "Waiting to fetch your Cap"
-    createPopup(title, subtitle, true);
 
-    // Failure popup
-    setTimeout(() => {
-      removePopup();
-      let title = "Timeout Error";
-      let subtitle = "Capture took too long!"
-      createPopup(title, subtitle, false);
-    }, TIMEOUT);
-
-    const response = await fetch(query);
-    const json = await response.json();
-    if (json.url != null) {
-      console.log(json.url)
-      setCurrentImage(json.url);
-      setImages((images) => [...images, json.url]);
-      reset();
-      removePopup();
-    } else {
-      removePopup();
-      let title = "Query Error";
-      let subtitle = "Something went wrong with your Cap!"
-      createPopup(title, subtitle, false);
-    }
-  }
-  const reset = () => {
-    setInputs({
-      url: "",
-      format: "",
-      no_ads: "",
-      no_cookie_banners: "",
-      //scroll_page: "",
-      width: "",
-      height: "",
-    });
-  }
-  const scrollToggle = () => {
-    let header = document.getElementById('header');
-    let sticky = header.offsetTop + 25;
-    if (window.scrollY > sticky) {
-      header.classList.add("fade");
-    } else {
-      header.classList.remove("fade");
-    }
-  }
-
-  // Header Scrolling
+  // Scrolling
   window.onscroll = function() {scrollToggle()};
 
   return (
@@ -170,8 +190,8 @@ function App() {
           )
           }
         </div>
-      </div>
-      
+      </div>   
+
       <div className="app-container">
         <div className="header" id='header'>
           <h1 className="title">C A P I T</h1>
@@ -190,11 +210,13 @@ function App() {
           onSubmit={submitForm}
         />
         {currentImage ? (
-          <img
-            className="screenshot"
-            src={currentImage}
-            alt="Screenshot Returned"
-          />
+          <div className="current-container">
+            <img
+              className="screenshot"
+              src={currentImage}
+              alt="Screenshot Returned"
+            />
+          </div>
         ) : (
           <div> </div>
         )}
@@ -219,6 +241,14 @@ function App() {
         </div>
         <Gallery images={images}/>
         <br></br>
+
+        <div className="footer fade" id='footer'>
+          {quota ? (
+            <h3>{quota.remaining} / {quota.limit} API calls remaining</h3>
+          ) : (
+            <h3>No API limit information available</h3>
+          )}
+        </div>
       </div>
     </div>
   )
