@@ -20,6 +20,7 @@ function App() {
   const [popupTitle, setPopupTitle] = useState("");
   const [popupSubtitle, setPopupSubtitle] = useState("");
   const [popupButton, setPopupButton] = useState(false);
+  const TIMEOUT = 15000; // Timeout limit for API
 
   // API Key
   const ACCESS_KEY = import.meta.env.VITE_APP_ACCESS_KEY;
@@ -28,10 +29,13 @@ function App() {
   const createPopup = (title, subtitle, isLoading) => {
     setPopupTitle(title);
     setPopupSubtitle(subtitle);
-    let popup = document.querySelector('.popup-container');
-    popup.classList.remove("popupHidden");
+    let container = document.querySelector('.popup-container');
+    let wrapper = document.querySelector('.popup-wrapper');
+    let titleContainer = document.querySelector('.popup-title');
+    container.classList.remove("popupHidden");
     if (isLoading) {
-      popup.classList.add("loading");
+      wrapper.classList.add("loading");
+      titleContainer.classList.add("elipses");
       setPopupButton(false);
     } else {
       setPopupButton(true);
@@ -39,9 +43,10 @@ function App() {
   }
   const removePopup = () => {
     let popup = document.querySelector('.popup-container');
-    setPopupTitle("");
-    setPopupSubtitle("");
-    popup.classList.remove("loading");
+    let wrapper = document.querySelector('.popup-wrapper');
+    let titleContainer = document.querySelector('.popup-title');
+    wrapper.classList.remove("loading");
+    titleContainer.classList.remove("elipses");
     popup.classList.add("popupHidden");
   }
   const submitForm = () => {
@@ -81,25 +86,38 @@ function App() {
 
     callAPI(query).catch(console.error);
   }
+  // Not in use: Example for axios
+  const axios = (query) => {
+    axios.get(query)
+    .then(response => {
+      let url = response.data.url;
+      if (url != null) {
+        console.log(url)
+        setCurrentImage(url);
+        reset();
+      } else {
+        // Consider changing this to be more unique with a popup or animation
+        alert("Query Error: Please try again.")
+      }
+    })
+    .catch(error => {
+      console.error("There was a problem getting the data: " + error);
+    })
+  }
   const callAPI = async (query) => {
-    // axios.get(query)
-    // .then(response => {
-    //   let url = response.data.url;
-    //   if (url != null) {
-    //     console.log(url)
-    //     setCurrentImage(url);
-    //     reset();
-    //   } else {
-    //     // Consider changing this to be more unique with a popup or animation
-    //     alert("Query Error: Please try again.")
-    //   }
-    // })
-    // .catch(error => {
-    //   console.error("There was a problem getting the data: " + error);
-    // })
+    // Loading popup
     let title = "Capturing";
     let subtitle = "Waiting to fetch your Cap"
     createPopup(title, subtitle, true);
+
+    // Failure popup
+    setTimeout(() => {
+      removePopup();
+      let title = "Timeout Error";
+      let subtitle = "Capture took too long!"
+      createPopup(title, subtitle, false);
+    }, TIMEOUT);
+
     const response = await fetch(query);
     const json = await response.json();
     if (json.url != null) {
