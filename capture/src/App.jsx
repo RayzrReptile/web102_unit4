@@ -57,33 +57,31 @@ function App() {
     callAPI(query).catch(console.error);
   }
   const callAPI = async (query) => {
-    axios.get(query)
-    .then(response => {
-      let url = response.data.url;
-      if (url != null) {
-        console.log(url)
-        setCurrentImage(url);
-        reset();
-      } else {
-        // Consider changing this to be more unique with a popup or animation
-        alert("Query Error: Please try again.")
-      }
-    })
-    .catch(error => {
-      console.error("There was a problem getting the data: " + error);
-    })
-    // const response = await fetch(query);
-    // await response.json()
-    //   .then(json => {
-    //     if (json.url != null) {
-    //       console.log(json.url)
-    //       setCurrentImage(json.url);
-    //       //reset();
-    //     } else {
-    //       // Consider changing this to be more unique with a popup or animation
-    //       alert("Query Error: Please try again.")
-    //     }
-    // });
+    // axios.get(query)
+    // .then(response => {
+    //   let url = response.data.url;
+    //   if (url != null) {
+    //     console.log(url)
+    //     setCurrentImage(url);
+    //     reset();
+    //   } else {
+    //     // Consider changing this to be more unique with a popup or animation
+    //     alert("Query Error: Please try again.")
+    //   }
+    // })
+    // .catch(error => {
+    //   console.error("There was a problem getting the data: " + error);
+    // })
+    const response = await fetch(query);
+    const json = await response.json();
+    if (json.url != null) {
+      console.log(json.url)
+      setCurrentImage(json.url);
+      reset();
+    } else {
+      // Consider changing this to be more unique with a popup or animation
+      alert("Query Error: Please try again.")
+    }
   }
   const reset = () => {
     setInputs({
