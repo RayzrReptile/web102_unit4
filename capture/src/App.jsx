@@ -97,10 +97,25 @@ function App() {
       height: "",
     });
   }
+  const scrollToggle = () => {
+    let header = document.getElementById('header');
+    let sticky = header.offsetTop + 25;
+    if (window.scrollY > sticky) {
+      header.classList.add("fade");
+    } else {
+      header.classList.remove("fade");
+    }
+  }
+
+  // Header Scrolling
+  window.onscroll = function() {scrollToggle()};
 
   return (
     <div className="page-container">
-      <h1 className="title">Website Capture</h1>
+      <div className="header" id='header'>
+        <h1 className="title">C A P I T</h1>
+        <h3 className="subtitle">Capture your favorite website with API Flash</h3>
+      </div>
 
       <APIForm
         inputs={inputs}
@@ -124,20 +139,20 @@ function App() {
       )}
       <div className="query-container">
         <h3>Current Query Status:</h3>
-        <p>
+        <p className='query-sequence'>
           https://api.apiflash.com/v1/urltoimage?access_key=ACCESS_KEY    
           <br></br>
-          &url={inputs.url} <br></br>
-          &format={inputs.format} <br></br>
-          &width={inputs.width}
+          &url=<span>{inputs.url}</span> <br></br>
+          &format=<span>{inputs.format}</span> <br></br>
+          &width=<span>{inputs.width}</span>
           <br></br>
-          &height={inputs.height}
+          &height=<span>{inputs.height}</span>
           <br></br>
-          &scroll_page={inputs.scroll_page}
+          &scroll_page=<span>{inputs.scroll_page}</span>
           <br></br>
-          &no_cookie_banners={inputs.no_cookie_banners}
+          &no_cookie_banners=<span>{inputs.no_cookie_banners}</span>
           <br></br>
-          &no_ads={inputs.no_ads}
+          &no_ads=<span>{inputs.no_ads}</span>
           <br></br>
         </p>
       </div>

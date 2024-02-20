@@ -1,8 +1,141 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
+  margin-top: 80px;
   padding: 2rem;
   text-align: center;
+  user-select: none;
+}
+
+/* ===== Header Section ===== */
+
+.header {
+  background-color: #0b0b0b;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  transition: all 0.25s;
+  height: 100px;
+  color: rgb(228, 111, 68);
+}
+
+.fade {
+  opacity: 0;
+  z-index: -1;
+}
+
+.title, .subtitle {
+  margin: 0 12px;
+}
+.subtitle {
+  color: #8a8a8a;
 }
 
 /* ===== Input Section ===== */
+
+.form-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: stretch;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+li {
+  list-style: none;
+}
+li.form {
+  width: 300px;
+  padding: 18px;
+  margin: 8px;
+  background-color: #0b0b0b;
+  box-shadow: 0 7px #191919;
+  transition: all 0.5s;
+}
+li.form:hover {
+  scale: 1.05;
+  box-shadow: 0 2px rgb(125, 61, 37);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #242424 inset !important;
+}
+
+.textbox {
+  width: 75%;
+  height: 32px;
+  border: none;
+  text-align: center;
+  background-color: #242424;
+  transition: width 0.5s;
+}
+.textbox:focus-visible {
+  outline: none;
+}
+.textbox:hover {
+  width: 85%;
+}
+
+.submit-button {
+  margin: 12px;
+  width: 200px;
+  height: 100px;
+  background-color: rgb(177, 80, 45);
+  box-shadow: 0 7px rgb(125, 61, 37);
+  transition: all 0.5s;
+}
+.submit-button:hover {
+  scale: 1.05;
+  font-size: 125%;
+}
+
+.submit-button:active {
+  box-shadow: 0 3px rgb(95, 49, 32);
+  transform: translateY(4px);
+}
+
+/* ===== Current Image Section ===== */
+
+.screenshot {
+  width: 100%;
+  margin: 12px auto;
+}
+
+/* ===== Query Status Section ===== */
+
+.query-container {
+  background-color: #0b0b0b;
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.query-sequence span {
+  color: #8a8a8a;
+}
+
+/* ===== Gallery Section ===== */
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-wrapper {
+  max-width: 350px;
+}
+.image {
+  max-width: inherit;
+}
+
+/* ===== Pop-Up Section ===== */
