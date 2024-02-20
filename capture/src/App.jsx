@@ -17,11 +17,33 @@ function App() {
   });
   const [currentImage, setCurrentImage] = useState(null);
   const [images, setImages] = useState([]);
+  const [popupTitle, setPopupTitle] = useState("");
+  const [popupSubtitle, setPopupSubtitle] = useState("");
+  const [popupButton, setPopupButton] = useState(false);
 
   // API Key
   const ACCESS_KEY = import.meta.env.VITE_APP_ACCESS_KEY;
 
   // Functions
+  const createPopup = (title, subtitle, isLoading) => {
+    setPopupTitle(title);
+    setPopupSubtitle(subtitle);
+    let popup = document.querySelector('.popup-container');
+    popup.classList.remove("popupHidden");
+    if (isLoading) {
+      popup.classList.add("loading");
+      setPopupButton(false);
+    } else {
+      setPopupButton(true);
+    }
+  }
+  const removePopup = () => {
+    let popup = document.querySelector('.popup-container');
+    setPopupTitle("");
+    setPopupSubtitle("");
+    popup.classList.remove("loading");
+    popup.classList.add("popupHidden");
+  }
   const submitForm = () => {
     let defaultValues = {
       format: "jpeg",
@@ -34,8 +56,9 @@ function App() {
 
     // URL error handle
     if (inputs.url == "" || inputs.url == " ") {
-      // Consider changing this to be more unique with a popup or animation
-      alert("No URL provided.");
+      let title = "No URL Provided";
+      let subtitle = "Please provide a URL in the above input"
+      createPopup(title, subtitle, false);
     }
     else {
       for (const [key, value] of Object.entries(inputs)) {
@@ -74,6 +97,9 @@ function App() {
     // .catch(error => {
     //   console.error("There was a problem getting the data: " + error);
     // })
+    let title = "Capturing";
+    let subtitle = "Waiting to fetch your Cap"
+    createPopup(title, subtitle, true);
     const response = await fetch(query);
     const json = await response.json();
     if (json.url != null) {
@@ -81,9 +107,12 @@ function App() {
       setCurrentImage(json.url);
       setImages((images) => [...images, json.url]);
       reset();
+      removePopup();
     } else {
-      // Consider changing this to be more unique with a popup or animation
-      alert("Query Error: Please try again.")
+      removePopup();
+      let title = "Query Error";
+      let subtitle = "Something went wrong with your Cap!"
+      createPopup(title, subtitle, false);
     }
   }
   const reset = () => {
@@ -112,52 +141,67 @@ function App() {
 
   return (
     <div className="page-container">
-      <div className="header" id='header'>
-        <h1 className="title">C A P I T</h1>
-        <h3 className="subtitle">Capture your favorite website with API Flash</h3>
+      <div className="popup-container popupHidden">
+        <div className="popup-wrapper">
+          <h2 className="popup-title">{popupTitle}</h2>
+          <p className="popup-subtitle">{popupSubtitle}</p>
+          {popupButton ? (
+            <button className="popup-button" onClick={removePopup}>OK</button>
+          ) : (
+            <div></div>
+          )
+          }
+        </div>
       </div>
+      
+      <div className="app-container">
+        <div className="header" id='header'>
+          <h1 className="title">C A P I T</h1>
+          <h3 className="subtitle">Capture your favorite website with API Flash</h3>
+        </div>
 
-      <APIForm
-        inputs={inputs}
-        handleChange={(e) => {
-          e.preventDefault();
-          setInputs((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value.trim(),
-          }))
-        }}
-        onSubmit={submitForm}
-      />
-      {currentImage ? (
-        <img
-          className="screenshot"
-          src={currentImage}
-          alt="Screenshot Returned"
+        <APIForm
+          inputs={inputs}
+          handleChange={(e) => {
+            e.preventDefault();
+            setInputs((prevState) => ({
+              ...prevState,
+              [e.target.name]: e.target.value.trim(),
+            }))
+          }}
+          onSubmit={submitForm}
         />
-      ) : (
-        <div> </div>
-      )}
-      <div className="query-container">
-        <h3>Current Query Status:</h3>
-        <p className='query-sequence'>
-          https://api.apiflash.com/v1/urltoimage?access_key=ACCESS_KEY    
-          <br></br>
-          &url=<span>{inputs.url}</span> <br></br>
-          &format=<span>{inputs.format}</span> <br></br>
-          &width=<span>{inputs.width}</span>
-          <br></br>
-          &height=<span>{inputs.height}</span>
-          <br></br>
-          &scroll_page=<span>{inputs.scroll_page}</span>
-          <br></br>
-          &no_cookie_banners=<span>{inputs.no_cookie_banners}</span>
-          <br></br>
-          &no_ads=<span>{inputs.no_ads}</span>
-          <br></br>
-        </p>
+        {currentImage ? (
+          <img
+            className="screenshot"
+            src={currentImage}
+            alt="Screenshot Returned"
+          />
+        ) : (
+          <div> </div>
+        )}
+        <div className="query-container">
+          <h3>Current Query Status:</h3>
+          <p className='query-sequence'>
+            https://api.apiflash.com/v1/urltoimage?access_key=ACCESS_KEY    
+            <br></br>
+            &url=<span>{inputs.url}</span> <br></br>
+            &format=<span>{inputs.format}</span> <br></br>
+            &width=<span>{inputs.width}</span>
+            <br></br>
+            &height=<span>{inputs.height}</span>
+            <br></br>
+            &scroll_page=<span>{inputs.scroll_page}</span>
+            <br></br>
+            &no_cookie_banners=<span>{inputs.no_cookie_banners}</span>
+            <br></br>
+            &no_ads=<span>{inputs.no_ads}</span>
+            <br></br>
+          </p>
+        </div>
+        <Gallery images={images}/>
+        <br></br>
       </div>
-      <Gallery images={images}/>
-      <br></br>
     </div>
   )
 }

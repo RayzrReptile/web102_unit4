@@ -5,6 +5,10 @@
   padding: 2rem;
   text-align: center;
   user-select: none;
+
+  --orange-light: rgb(241, 138, 100);
+  --orange-medium: rgb(177, 80, 45);
+  --orange-dark: rgb(125, 61, 37);
 }
 
 /* ===== Header Section ===== */
@@ -19,10 +23,10 @@
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 999;
+  z-index: 10;
   transition: all 0.25s;
   height: 100px;
-  color: rgb(228, 111, 68);
+  color: var(--orange-light)
 }
 
 .fade {
@@ -34,10 +38,10 @@
   margin: 0 12px;
 }
 .subtitle {
-  color: #8a8a8a;
+  color: #f0f0f0;
 }
 
-/* ===== Input Section ===== */
+/* ===== Form Section ===== */
 
 .form-container {
   display: flex;
@@ -45,6 +49,10 @@
   align-items: stretch;
   flex-wrap: wrap;
   margin: 0 auto;
+}
+
+.form-title {
+  color: #8a8a8a;
 }
 
 li {
@@ -60,7 +68,11 @@ li.form {
 }
 li.form:hover {
   scale: 1.05;
-  box-shadow: 0 2px rgb(125, 61, 37);
+  box-shadow: 0 2px var(--orange-dark)
+}
+
+li.form h2 {
+  color: rgb(241, 138, 100);
 }
 
 input:-webkit-autofill,
@@ -89,17 +101,16 @@ input:-webkit-autofill:active{
   margin: 12px;
   width: 200px;
   height: 100px;
-  background-color: rgb(177, 80, 45);
-  box-shadow: 0 7px rgb(125, 61, 37);
+  font-size: 1.8em;
+  background-color: var(--orange-medium);
+  box-shadow: 0 7px var(--orange-dark);
   transition: all 0.5s;
 }
 .submit-button:hover {
   scale: 1.05;
-  font-size: 125%;
 }
-
 .submit-button:active {
-  box-shadow: 0 3px rgb(95, 49, 32);
+  box-shadow: 0 3px var(--orange-dark);
   transform: translateY(4px);
 }
 
@@ -139,3 +150,57 @@ input:-webkit-autofill:active{
 }
 
 /* ===== Pop-Up Section ===== */
+
+.page-container {
+  position: relative;
+}
+
+.popup-container {
+  backdrop-filter: grayscale(1) blur(1px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.25s;
+}
+
+.popup-wrapper {
+  width: 300px;
+  padding: 24px;
+  line-height: 12px;
+  background: var(--orange-medium);
+  box-shadow: 0 7px var(--orange-dark);
+  transition: all 0.25s;
+}
+
+.popupHidden {
+  transition: all 0.25s;
+  display: none;
+
+}
+
+@keyframes loading {
+  0% {
+    transform: translateY(1px);
+  }
+  10% {
+    transform: translateY(5px);
+  }
+  90% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(1px);
+  }
+}
+.loading {
+  animation-name: loading;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
